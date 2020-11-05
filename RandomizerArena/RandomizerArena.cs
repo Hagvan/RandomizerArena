@@ -123,7 +123,7 @@ namespace RandomizerArena
             player.GiveItem(hat.hat_id, 1);
             player.GiveItem(shirt.shirt_id, 1);
             player.GiveItem(pants.pants_id, 1);
-            player.Experience += 100; // give player 100 exp by default
+            player.MaxSkills();
         }
     }
 }
