@@ -101,7 +101,7 @@ namespace RandomizerArena
                             {
                                 if (round_counter == 3)
                                 {
-                                    UnturnedChat.Say("Enjoying the gamemode? Want to suggest a change or a new round? Join our discord! /discord");
+                                    UnturnedChat.Say("Enjoying the gamemode? Want to suggest a change or a new round? Join server's discord! /discord");
                                     round_counter = 0;
                                 }
                                 else
