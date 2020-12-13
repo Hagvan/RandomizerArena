@@ -64,7 +64,7 @@ namespace RandomizerArena
         }
     }
 
-    */public class Test : IRocketCommand
+    /*public class Test : IRocketCommand
     {
         public AllowedCaller AllowedCaller => AllowedCaller.Console;
 
