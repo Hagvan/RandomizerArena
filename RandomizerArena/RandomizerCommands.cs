@@ -60,11 +60,11 @@ namespace RandomizerArena
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            UnturnedPlayer.FromName(caller.DisplayName).Player.sendBrowserRequest("Come join our discord!", "https://discord.gg/u6NWH37");
+            UnturnedPlayer.FromName(caller.DisplayName).Player.sendBrowserRequest("Come join our discord!", "https://discord.gg/5NsRr8aQu2");
         }
     }
 
-    public class Test : IRocketCommand
+    */public class Test : IRocketCommand
     {
         public AllowedCaller AllowedCaller => AllowedCaller.Console;
 
@@ -80,7 +80,6 @@ namespace RandomizerArena
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            //UnturnedPlayer.FromName(caller.DisplayName).Player.sendBrowserRequest("Come join our discord!", "https://discord.gg/u6NWH37");
             Asset[] items = Assets.find(EAssetType.ITEM);
             List<ItemGunAsset> guns = new List<ItemGunAsset>();
             List<ItemMagazineAsset> magazines = new List<ItemMagazineAsset>();
@@ -171,9 +170,8 @@ namespace RandomizerArena
                 }
             }
         }
-    }
+    }*/
 
-    //
     /*public class ChooseRound : IRocketCommand
     {
         private static WebClient web = new WebClient();

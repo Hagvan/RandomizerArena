@@ -123,6 +123,7 @@ namespace RandomizerArena
             player.GiveItem(hat.hat_id, 1);
             player.GiveItem(shirt.shirt_id, 1);
             player.GiveItem(pants.pants_id, 1);
+            player.GiveItem(105, 1); // baseball bat as default melee for every round
             player.MaxSkills();
         }
     }
