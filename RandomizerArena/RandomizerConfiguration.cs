@@ -16,6 +16,7 @@ namespace RandomizerArena
         public List<Shirt> a_shirt;
         public List<Pants> a_pants;
         public List<Hat> a_hat;
+        public List<Melee> a_melees;
 
         public void LoadDefaults()
         {
@@ -26,37 +27,38 @@ namespace RandomizerArena
             List<ItemShirtAsset> shirts = new List<ItemShirtAsset>();
             List<ItemVestAsset> vests = new List<ItemVestAsset>();
             List<ItemPantsAsset> pants = new List<ItemPantsAsset>();
+            List<ItemMeleeAsset> melees = new List<ItemMeleeAsset>();
             foreach (ItemAsset item in items)
             {
                 if (item is ItemAsset)
                 {
-                    if (item.type == EItemType.GUN)
+                    switch (item.type)
                     {
-                        guns.Add((ItemGunAsset)item);
-                    }
-                    if (item.type == EItemType.MAGAZINE)
-                    {
-                        magazines.Add((ItemMagazineAsset)item);
-                    }
-                    if (item.type == EItemType.HAT)
-                    {
-                        if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
-                            hats.Add((ItemHatAsset)item);
-                    }
-                    if (item.type == EItemType.SHIRT)
-                    {
-                        if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
-                            shirts.Add((ItemShirtAsset)item);
-                    }
-                    if (item.type == EItemType.VEST)
-                    {
-                        //if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).armor < 1)
-                        vests.Add((ItemVestAsset)item);
-                    }
-                    if (item.type == EItemType.PANTS)
-                    {
-                        if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
-                            pants.Add((ItemPantsAsset)item);
+                        case EItemType.GUN:
+                            guns.Add((ItemGunAsset)item);
+                            break;
+                        case EItemType.MAGAZINE:
+                            magazines.Add((ItemMagazineAsset)item);
+                            break;
+                        case EItemType.HAT:
+                            if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
+                                hats.Add((ItemHatAsset)item);
+                            break;
+                        case EItemType.SHIRT:
+                            if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
+                                shirts.Add((ItemShirtAsset)item);
+                            break;
+                        case EItemType.VEST:
+                            //if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).armor < 1)
+                            vests.Add((ItemVestAsset)item);
+                            break;
+                        case EItemType.PANTS:
+                            if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
+                                pants.Add((ItemPantsAsset)item);
+                            break;
+                        case EItemType.MELEE:
+                            melees.Add((ItemMeleeAsset)item);
+                            break;
                     }
                 }
             }
@@ -125,8 +127,18 @@ namespace RandomizerArena
                     a_pants.Add(new Pants() { pants_id = l_pants.id });
                 }
             }
+            a_melees = new List<Melee>();
+            foreach (ItemMeleeAsset l_melee in melees)
+            {
+                if (l_melee.size_z == 0)
+                {
+                    continue;
+                }
+                a_melees.Add(new Melee() { melee_id = l_melee.id });
+            }
         }
     }
+    // WeaponKit - data model to link between weapon and it's magazines (and their count)
     public class WeaponKit
     {
         public ushort weapon_id;
@@ -142,6 +154,7 @@ namespace RandomizerArena
         }
     }
 
+    // Magazine - data model to store magazine type and how much of it to give
     public class Magazine
     {
         public ushort magazine_id;
@@ -174,5 +187,12 @@ namespace RandomizerArena
         public ushort pants_id;
 
         public Pants() { }
+    }
+
+    public class Melee
+    {
+        public ushort melee_id;
+
+        public Melee() { }
     }
 }

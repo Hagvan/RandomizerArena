@@ -19,6 +19,7 @@ namespace RandomizerArena
         private List<Pants> pants;
         private List<Hat> hats;
         private List<Shirt> shirts;
+        private List<Melee> melees;
 
         protected override void Load()
         {
@@ -28,6 +29,7 @@ namespace RandomizerArena
             pants = Configuration.Instance.a_pants;
             hats = Configuration.Instance.a_hat;
             shirts = Configuration.Instance.a_shirt;
+
             r = new Random();
             StartCoroutine(CheckArenaState());
             Logger.Log("Loaded arena randomizer.");
@@ -79,11 +81,12 @@ namespace RandomizerArena
                                 Hat round_hat = hats[r.Next(hats.Count)];
                                 Shirt round_shirt = shirts[r.Next(hats.Count)];
                                 Pants round_pants = pants[r.Next(hats.Count)];
+                                Melee round_melee = melees[r.Next(melees.Count)];
 
                                 for (int i = 0; i < Provider.clients.Count; i++)
                                 {
                                     UnturnedPlayer uPlayer = UnturnedPlayer.FromCSteamID(Provider.clients[i].playerID.steamID);
-                                    EquipPlayer(uPlayer, round_weaponkit, round_magazine, round_hat, round_shirt, round_pants);
+                                    EquipPlayer(uPlayer, round_weaponkit, round_magazine, round_hat, round_shirt, round_pants, round_melee);
                                 }
                                 break;
                             }
@@ -99,7 +102,7 @@ namespace RandomizerArena
                             }
                         case EArenaState.INTERMISSION:
                             {
-                                if (round_counter == 3)
+                                if (round_counter == 2)
                                 {
                                     UnturnedChat.Say("Enjoying the gamemode? Want to suggest a change or a new round? Join server's discord! /discord");
                                     round_counter = 0;
@@ -115,7 +118,7 @@ namespace RandomizerArena
                 yield return new WaitForSeconds(1f);
             }
         }
-        private void EquipPlayer(UnturnedPlayer player, WeaponKit weaponKit, Magazine magazine, Hat hat, Shirt shirt, Pants pants)
+        private void EquipPlayer(UnturnedPlayer player, WeaponKit weaponKit, Magazine magazine, Hat hat, Shirt shirt, Pants pants, Melee melee)
         {
             player.GiveItem(weaponKit.weapon_id, 1);
             player.GiveItem(394, 3); // give 3 dressings by default
@@ -123,7 +126,7 @@ namespace RandomizerArena
             player.GiveItem(hat.hat_id, 1);
             player.GiveItem(shirt.shirt_id, 1);
             player.GiveItem(pants.pants_id, 1);
-            player.GiveItem(105, 1); // baseball bat as default melee for every round
+            player.GiveItem(melee.melee_id, 1);
             player.MaxSkills();
         }
     }

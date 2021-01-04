@@ -64,7 +64,7 @@ namespace RandomizerArena
         }
     }
 
-    /*public class Test : IRocketCommand
+    public class Test : IRocketCommand
     {
         public AllowedCaller AllowedCaller => AllowedCaller.Console;
 
@@ -87,37 +87,38 @@ namespace RandomizerArena
             List<ItemShirtAsset> shirts = new List<ItemShirtAsset>();
             List<ItemVestAsset> vests = new List<ItemVestAsset>();
             List<ItemPantsAsset> pants = new List<ItemPantsAsset>();
+            List<ItemMeleeAsset> melees = new List<ItemMeleeAsset>();
             foreach (ItemAsset item in items)
             {
                 if (item is ItemAsset)
                 {
-                    if (item.type == EItemType.GUN)
+                    switch (item.type)
                     {
-                        guns.Add((ItemGunAsset)item);
-                    }
-                    if (item.type == EItemType.MAGAZINE)
-                    {
-                        magazines.Add((ItemMagazineAsset)item);
-                    }
-                    if (item.type == EItemType.HAT)
-                    {
-                        if (((ItemClothingAsset) item).armor < 1 || ((ItemHatAsset)item).armor < 1)
-                            hats.Add((ItemHatAsset)item);
-                    }
-                    if (item.type == EItemType.SHIRT)
-                    {
-                        if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).armor < 1)
-                            shirts.Add((ItemShirtAsset)item);
-                    }
-                    if (item.type == EItemType.VEST)
-                    {
-                        //if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).armor < 1)
-                        vests.Add((ItemVestAsset)item);
-                    }
-                    if (item.type == EItemType.PANTS)
-                    {
-                        if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).armor < 1)
-                            pants.Add((ItemPantsAsset)item);
+                        case EItemType.GUN:
+                            guns.Add((ItemGunAsset)item);
+                            break;
+                        case EItemType.MAGAZINE:
+                            magazines.Add((ItemMagazineAsset)item);
+                            break;
+                        case EItemType.HAT:
+                            if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
+                                hats.Add((ItemHatAsset)item);
+                            break;
+                        case EItemType.SHIRT:
+                            if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
+                                shirts.Add((ItemShirtAsset)item);
+                            break;
+                        case EItemType.VEST:
+                            //if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).armor < 1)
+                            vests.Add((ItemVestAsset)item);
+                            break;
+                        case EItemType.PANTS:
+                            if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
+                                pants.Add((ItemPantsAsset)item);
+                            break;
+                        case EItemType.MELEE:
+                            melees.Add((ItemMeleeAsset)item);
+                            break;
                     }
                 }
             }
@@ -162,121 +163,21 @@ namespace RandomizerArena
                 }
                 Console.WriteLine(kit.weapon_id + " - " + mags);
             }
-            foreach (ItemShirtAsset shirt in shirts)
+            /*foreach (ItemShirtAsset shirt in shirts)
             {
                 if (shirt.armor < 1 || shirt.explosionArmor < 1)
                 {
 
                 }
-            }
-        }
-    }*/
-
-    /*public class ChooseRound : IRocketCommand
-    {
-        private static WebClient web = new WebClient();
-
-        public AllowedCaller AllowedCaller => AllowedCaller.Player;
-
-        public string Name => "round";
-
-        public string Help => "Next round will be guaranteed to be what you desire.";
-
-        public string Syntax => "<round name>";
-
-        public List<string> Aliases => new List<string>();
-
-        public List<string> Permissions => new List<string>() { "round" };
-
-        public void Execute(IRocketPlayer caller, string[] command)
-        {
-            if (command.Length == 0 || command[0].Length == 0)
+            }*/
+            foreach (ItemMeleeAsset melee in melees)
             {
-                UnturnedChat.Say(caller, "Usage: /round <round name>. Example: /round Ace - Ace only.");
-                return;
-            }
-
-            UnturnedPlayer user = UnturnedPlayer.FromName(caller.DisplayName);
-
-            if (user.IsAdmin)
-            {
-                int set_index = -1;
-                if ((set_index = Randomizer.sets.FindIndex(set => set.name.ToLower().StartsWith(command[0].ToLower()))) > -1)
+                if (melee.size_z == 0)
                 {
-                    if (Randomizer.selected_index.Contains(set_index))
-                    {
-                        UnturnedChat.Say(caller, "This round is already prioritised.");
-                        return;
-                    }
-                    Randomizer.selected_index.Enqueue(set_index);
-                    UnturnedChat.Say(UnturnedPlayer.FromName(caller.DisplayName).Player.name + " prioritised " +
-                    Randomizer.sets[set_index].name + " round.");
-                    UnturnedChat.Say("Type /round in the chat to prioritise your favorite round too!");
+                    continue;
                 }
-                else
-                {
-                    UnturnedChat.Say(caller, "Round name not found. Try again. To view all rounds -> /rounds");
-                }
-                return;
-            }
-
-            //UnturnedChat.Say(caller, .ToString());
-            string s = "";
-            try
-            {
-                s = web.DownloadString("http://unturned-servers.net/api/?object=votes&element=claim&key=<your-key-here>&steamid="
-                + user.SteamPlayer().playerID.steamID);
-            }
-            catch (WebException e)
-            {
-                Logger.LogWarning(e.ToString());
-            }
-
-            if (s.Length == 0)
-            {
-                return;
-            }
-
-            switch (s[0])
-            {
-                case '0':
-                    UnturnedPlayer.FromName(caller.DisplayName).Player.sendBrowserRequest("You need to vote to use that.", "https://unturned-servers.net/server/196497/vote/");
-                    UnturnedChat.Say(caller, "You didn't vote today. Please, vote to use this function.");
-                    break;
-                case '1':
-                    int set_index = -1;
-                    if ((set_index = Randomizer.sets.FindIndex(set => set.name.ToLower().StartsWith(command[0].ToLower()))) > -1)
-                    {
-                        if (Randomizer.selected_index.Contains(set_index))
-                        {
-                            UnturnedChat.Say(caller, "This round is already prioritised.");
-                            return;
-                        }
-                        Randomizer.selected_index.Enqueue(set_index);
-                        UnturnedChat.Say(UnturnedPlayer.FromName(caller.DisplayName).Player.name + " prioritised " +
-                        Randomizer.sets[set_index].name + " round.");
-                        UnturnedChat.Say("Type /round in the chat to prioritise your favorite round too!");
-                        try
-                        {
-                            web.DownloadString("http://unturned-servers.net/api/?action=post&object=votes&element=claim&key=your-key-here&steamid="
-                            + user.SteamPlayer().playerID.steamID);
-                        }
-                        catch (WebException e)
-                        {
-                            Logger.LogWarning(e.ToString());
-                        }
-                    }
-                    else
-                    {
-                        UnturnedChat.Say(caller, "Round name not found. Try again.");
-                    }
-                    break;
-                case '2':
-                    UnturnedChat.Say(caller, "Sorry, but you used your round today.");
-                    UnturnedChat.Say(caller, "In the future there will be more than one usage per vote!");
-                    break;
+                Console.WriteLine(melee.id + ": " + melee.size_z + ", " + melee.size2_z + ", " + melee.size_x + ", " + melee.size_y);
             }
         }
     }
-    */
 }
