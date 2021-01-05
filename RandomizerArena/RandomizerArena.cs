@@ -29,7 +29,7 @@ namespace RandomizerArena
             pants = Configuration.Instance.a_pants;
             hats = Configuration.Instance.a_hat;
             shirts = Configuration.Instance.a_shirt;
-
+            melees = Configuration.Instance.a_melees;
             r = new Random();
             StartCoroutine(CheckArenaState());
             Logger.Log("Loaded arena randomizer.");
