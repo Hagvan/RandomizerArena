@@ -12,6 +12,8 @@ namespace RandomizerArena
 {
     public class RandomizerConfiguration : IRocketPluginConfiguration
     {
+        public int protection_duration;
+        public uint start_experience;
         public List<WeaponKit> weapon_kits;
         public List<Shirt> a_shirt;
         public List<Pants> a_pants;
@@ -20,7 +22,9 @@ namespace RandomizerArena
 
         public void LoadDefaults()
         {
-            Asset[] items = Assets.find(EAssetType.ITEM);
+            protection_duration = 10; // set default protection duration
+            start_experience = 150; // set default round start experience
+            Asset[] items = Assets.find(EAssetType.ITEM); // generate equipment data
             List<ItemGunAsset> guns = new List<ItemGunAsset>();
             List<ItemMagazineAsset> magazines = new List<ItemMagazineAsset>();
             List<ItemHatAsset> hats = new List<ItemHatAsset>();

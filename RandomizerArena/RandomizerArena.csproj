@@ -76,6 +76,7 @@
     <Compile Include="RandomizerCommands.cs" />
     <Compile Include="RandomizerConfiguration.cs" />
     <Compile Include="RandomizerLeaderboard.cs" />
+    <Compile Include="RandomizerSpawnProtection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
