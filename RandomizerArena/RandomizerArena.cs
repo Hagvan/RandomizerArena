@@ -23,6 +23,7 @@ namespace RandomizerArena
         private int protection_duration;
         private uint start_experience;
         private int current_duration;
+        private bool maxskills;
 
         protected override void Load()
         {
@@ -30,6 +31,7 @@ namespace RandomizerArena
             round_counter = 0;
             protection_duration = 10;
             start_experience = 150;
+            maxskills = false;
 
             weapon_kits = Configuration.Instance.weapon_kits;
             pants = Configuration.Instance.a_pants;
@@ -38,6 +40,7 @@ namespace RandomizerArena
             melees = Configuration.Instance.a_melees;
             protection_duration = Configuration.Instance.protection_duration;
             start_experience = Configuration.Instance.start_experience;
+            maxskills = Configuration.Instance.maxskills;
 
             current_duration = -1;
             r = new Random();
@@ -154,8 +157,14 @@ namespace RandomizerArena
             player.GiveItem(shirt.shirt_id, 1);
             player.GiveItem(pants.pants_id, 1);
             player.GiveItem(melee.melee_id, 1);
-            player.Experience = start_experience;
-            //player.MaxSkills();
+            if (maxskills)
+            {
+                player.MaxSkills();
+            } 
+            else
+            {
+                player.Experience = start_experience;
+            }
         }
 
         public readonly byte[] EMPTY_BYTE_ARRAY = new byte[0]; // used only in ClearInventory from uEssentials, modified for RandomizerArena
