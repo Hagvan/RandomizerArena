@@ -66,7 +66,7 @@ namespace RandomizerArena
                     }
                     else if (current_duration == 0)
                     {
-                        RandomizerSpawnProtection.RemoveProtection();
+                        //RandomizerSpawnProtection.RemoveProtection();
                         current_duration--;
                     }
                     if (state != LevelManager.arenaState) {
@@ -98,7 +98,7 @@ namespace RandomizerArena
                                     //Logger.Log("Arena state: PLAY");
                                     ItemManager.askClearAllItems(); // remove all items from the ground
 
-                                    RandomizerSpawnProtection.StartProtection(); // protect players
+                                    //RandomizerSpawnProtection.StartProtection(); // protect players
                                     current_duration = protection_duration;
 
                                     // todo equip player
@@ -109,9 +109,9 @@ namespace RandomizerArena
                                     Pants round_pants = pants[r.Next(hats.Count)];
                                     Melee round_melee = melees[r.Next(melees.Count)];
 
-                                    for (int i = 0; i < Provider.clients.Count; i++) // give everybody the loadout
+                                    foreach (SteamPlayer player in Provider.clients) // give everybody the loadout
                                     {
-                                        UnturnedPlayer uPlayer = UnturnedPlayer.FromCSteamID(Provider.clients[i].playerID.steamID);
+                                        UnturnedPlayer uPlayer = UnturnedPlayer.FromSteamPlayer(player);
                                         EquipPlayer(uPlayer, round_weaponkit, round_magazine, round_hat, round_shirt, round_pants, round_melee);
                                     }
 
@@ -159,26 +159,25 @@ namespace RandomizerArena
             player.GiveItem(melee.melee_id, 1);
             if (maxskills)
             {
-                player.MaxSkills();
+                player.MaxSkills(); // BROKEN
             } 
             else
             {
                 player.Experience = start_experience;
             }
+            Logger.Log($"{player.SteamName} + player equipped");
         }
 
         public readonly byte[] EMPTY_BYTE_ARRAY = new byte[0]; // used only in ClearInventory from uEssentials, modified for RandomizerArena
 
+        [System.Obsolete]
         private void ClearInventory(UnturnedPlayer player)
         {
             var playerInv = player.Inventory;
 
-
             // "Remove "models" of items from player "body""
-            player.Player.channel.send("tellSlot", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER,
-                (byte)0, (byte)0, EMPTY_BYTE_ARRAY);
-            player.Player.channel.send("tellSlot", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER,
-                (byte)1, (byte)0, EMPTY_BYTE_ARRAY);
+            player.Player.channel.send("tellSlot", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, (byte)0, (byte)0, EMPTY_BYTE_ARRAY);
+            player.Player.channel.send("tellSlot", ESteamCall.ALL, ESteamPacket.UPDATE_RELIABLE_BUFFER, (byte)1, (byte)0, EMPTY_BYTE_ARRAY);
 
             // Remove items
             for (byte page = 0; page < PlayerInventory.PAGES; page++)

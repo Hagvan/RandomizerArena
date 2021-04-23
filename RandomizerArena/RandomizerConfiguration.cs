@@ -1,12 +1,7 @@
 ﻿using Rocket.API;
-using Rocket.Core.Assets;
 using SDG.Unturned;
-using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RandomizerArena
 {
@@ -29,6 +24,7 @@ namespace RandomizerArena
             Asset[] items = Assets.find(EAssetType.ITEM); // generate equipment data
             List<ItemGunAsset> guns = new List<ItemGunAsset>();
             List<ItemMagazineAsset> magazines = new List<ItemMagazineAsset>();
+            List<ItemSightAsset> sights = new List<ItemSightAsset>();
             List<ItemHatAsset> hats = new List<ItemHatAsset>();
             List<ItemShirtAsset> shirts = new List<ItemShirtAsset>();
             List<ItemVestAsset> vests = new List<ItemVestAsset>();
@@ -45,6 +41,9 @@ namespace RandomizerArena
                             break;
                         case EItemType.MAGAZINE:
                             magazines.Add((ItemMagazineAsset)item);
+                            break;
+                        case EItemType.SIGHT:
+                            sights.Add((ItemSightAsset)item);
                             break;
                         case EItemType.HAT:
                             if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).armor < 1)
@@ -71,14 +70,16 @@ namespace RandomizerArena
             weapon_kits = new List<WeaponKit>();
             foreach (ItemGunAsset gun in guns) // add all weapons
             {
-                if (gun.size_z == 0)
+                if (gun.isTurret)
                 {
+                    //Console.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}", gun.id, gun.isTurret, gun.isPro, gun.isInvulnerable, gun.shell, gun.hasSafety, gun.action, gun.canPlayerEquip);
                     continue; // avoid using vehicle weapons
                 }
                 WeaponKit kit = new WeaponKit
                 {
                     weapon_id = gun.id,
-                    magazines = new List<Magazine>()
+                    magazines = new List<Magazine>(),
+                    sights = new List<Sight>()
                 };
                 foreach (ushort g_caliber in gun.magazineCalibers)
                 {
@@ -98,6 +99,27 @@ namespace RandomizerArena
                         }
                     }
                 }
+                foreach (ushort g_caliber in gun.attachmentCalibers)
+                {
+                    Console.WriteLine("1) g_caliber = " + g_caliber);
+                    foreach (ItemSightAsset sight in sights)
+                    {
+                        Console.WriteLine("   2) sight_id = " + sight.id);
+                        foreach (ushort s_caliber in sight.calibers)
+                        {
+                            Console.WriteLine("      3) sight_caliber = " + s_caliber);
+                            if (g_caliber == s_caliber)
+                            {
+                                Sight s = new Sight
+                                {
+                                    sight_id = sight.id,
+                                };
+                                kit.sights.Add(s);
+                                //Console.WriteLine("Added sight: " + sight.id);
+                            }
+                        }
+                    }
+                }
                 weapon_kits.Add(kit);
             }
             foreach (WeaponKit kit in weapon_kits) // add all magazines for weapons
@@ -107,7 +129,12 @@ namespace RandomizerArena
                 {
                     mags += magazine.magazine_id + ", ";
                 }
-                Console.WriteLine(kit.weapon_id + " - " + mags);
+                string attachments = "";
+                foreach (Sight attachment in kit.sights)
+                {
+                    attachments += attachment.sight_id + ", ";
+                }
+                Console.WriteLine(kit.weapon_id + " - " + mags + " / " + attachments);
             }
             a_shirt = new List<Shirt>();
             foreach (ItemShirtAsset shirt in shirts)
@@ -136,7 +163,7 @@ namespace RandomizerArena
             a_melees = new List<Melee>();
             foreach (ItemMeleeAsset l_melee in melees)
             {
-                if (l_melee.size_z == 0)
+                if (l_melee.size_x == 0)
                 {
                     continue;
                 }
@@ -149,13 +176,18 @@ namespace RandomizerArena
     {
         public ushort weapon_id;
         public List<Magazine> magazines;
+        public List<Sight> sights;
 
         public WeaponKit() { }
 
-        public WeaponKit(params Magazine[] magazines) { 
+        public WeaponKit(List<Magazine> magazines, List<Sight> sights) { 
             foreach (Magazine magazine in magazines)
             {
                 this.magazines.Add(magazine);
+            }
+            foreach (Sight sight in sights)
+            {
+                this.sights.Add(sight);
             }
         }
     }
@@ -171,6 +203,17 @@ namespace RandomizerArena
         public Magazine(ushort magazine_id, byte count) {
             this.magazine_id = magazine_id;
             this.count = count;
+        }
+    }
+    public class Sight
+    {
+        public ushort sight_id;
+
+        public Sight() { }
+
+        public Sight(ushort sight_id)
+        {
+            this.sight_id = sight_id;
         }
     }
 
