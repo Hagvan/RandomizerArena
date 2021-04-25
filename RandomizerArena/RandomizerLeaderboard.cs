@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RandomizerArena
 {
-    class RandomizerLeaderboard
+    public class RandomizerLeaderboard
     {
         // TODO: start making leaderboard code
     }

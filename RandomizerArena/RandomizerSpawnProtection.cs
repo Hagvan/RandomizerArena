@@ -5,7 +5,7 @@ using SDG.Unturned;
 
 namespace RandomizerArena
 {
-    class RandomizerSpawnProtection
+    public class RandomizerSpawnProtection
     {
         public static void StartProtection()
         {
