@@ -1,5 +1,4 @@
-﻿using Rocket.API;
-using Rocket.Core.Plugins;
+﻿using Rocket.Core.Plugins;
 using Rocket.Unturned.Chat;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -74,42 +73,53 @@ namespace RandomizerArena
                             case EArenaState.PLAY:
                                 {
                                     ItemManager.askClearAllItems(); // remove all items from the ground
-
                                     RandomizerSpawnProtection.StartProtection(); // protect players
                                     current_duration = protection_duration;
 
-                                    Logger.Log($"{weapon_kits.Count}, {hats.Count}, {pants.Count}, {vests.Count}, {melees.Count}");
+                                    //Logger.Log($"{weapon_kits.Count}, {hats.Count}, {pants.Count}, {vests.Count}, {melees.Count}");
+                                    //Logger.Log("1");
                                     WeaponKit round_weaponkit = weapon_kits[random.Next(weapon_kits.Count)]; // randomly select loadout items
+                                    //Logger.Log("2");
+                                    Logger.Log(round_weaponkit.weapon_id + " " + round_weaponkit.magazines.Count);
                                     Magazine round_magazine = round_weaponkit.magazines[random.Next(round_weaponkit.magazines.Count)];
+                                    //Logger.Log("3");
                                     Hat round_hat = hats[random.Next(hats.Count)];
-                                    Shirt round_shirt = shirts[random.Next(hats.Count)];
-                                    Pants round_pants = pants[random.Next(hats.Count)];
-                                    //Vest round_vest = vests[random.Next(vests.Count)];
+                                    //Logger.Log("4");
+                                    Shirt round_shirt = shirts[random.Next(shirts.Count)];
+                                    //Logger.Log("5");
+                                    Pants round_pants = pants[random.Next(pants.Count)];
+                                    //Logger.Log("6");
+                                    Vest round_vest = vests[random.Next(vests.Count)];
+                                    //Logger.Log("7");
                                     Melee round_melee = melees[random.Next(melees.Count)];
-
+                                    //Logger.Log("8");
                                     foreach (SteamPlayer player in Provider.clients) // give everybody the loadout
                                     {
                                         UnturnedPlayer uPlayer = UnturnedPlayer.FromSteamPlayer(player);
                                         //EquipPlayer(uPlayer, round_weaponkit, round_magazine, round_hat, round_shirt, round_pants, round_vest, round_melee);
-                                        EquipPlayer(uPlayer, round_weaponkit, round_magazine, round_hat, round_shirt, round_pants, round_melee);
+                                        EquipPlayer(uPlayer, round_weaponkit, round_magazine, round_hat, round_shirt, round_pants, round_vest, round_melee);
                                     }
+                                    //Logger.Log("9");
                                     break;
                                 }
                             case EArenaState.INTERMISSION:
                                 {
-                                    switch (round_counter)
+                                    switch (round_counter++)
                                     {
                                         case 0:
                                             // advertise supporter perks and command to purchase
+                                            UnturnedChat.Say("Running the server isn't free. If you feel like supporting the server or you want NA server to happen, consider supporting the server! /donate");
+                                            break;
                                         case 1:
                                             // advertise survival server
+                                            UnturnedChat.Say("First person only, rescaled progression, semi-vanilla server is coming soon.");
                                             break;
                                         case 2:
+                                            // advertise discord
                                             UnturnedChat.Say("Enjoying the gamemode? Want to make a suggestion or apply for moderator? Join the server discord! Say /discord");
                                             round_counter = 0;
                                             break;
                                     }
-                                    round_counter++;
                                     break;
                                 }
                         }
@@ -118,7 +128,7 @@ namespace RandomizerArena
                 yield return new WaitForSeconds(1f);
             }
         }
-        private void EquipPlayer(UnturnedPlayer player, WeaponKit weaponKit, Magazine magazine, Hat hat, Shirt shirt, Pants pants, Melee melee)
+        private void EquipPlayer(UnturnedPlayer player, WeaponKit weaponKit, Magazine magazine, Hat hat, Shirt shirt, Pants pants, Vest vest, Melee melee)
         {
             ClearInventory(player); // forcefully remove inventory to prevent players from keeping the kit from previous round by not respawning
             player.GiveItem(weaponKit.weapon_id, 1);
@@ -128,7 +138,7 @@ namespace RandomizerArena
             player.GiveItem(shirt.shirt_id, 1);
             player.GiveItem(pants.pants_id, 1);
             player.GiveItem(melee.melee_id, 1);
-            //player.GiveItem(vest.vest_id, 1);
+            player.GiveItem(vest.vest_id, 1);
             if (maxskills)
             {
                 //player.MaxSkills();

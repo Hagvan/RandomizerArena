@@ -1,5 +1,4 @@
-﻿using Rocket.API;
-using SDG.Unturned;
+﻿using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 
@@ -45,37 +44,25 @@ namespace RandomizerArena
                             if (item.size_x > 1 && item.size_y > 1) // all proper guns in the game have size over 1x1
                             {
                                 guns.Add((ItemGunAsset)item);
+                                //Console.Write(item.id + "-");
+                                //foreach (ushort caliber in ((ItemGunAsset)item).magazineCalibers)
+                                //{
+                                //    Console.Write(caliber + ", ");
+                                //}
+                                //Console.Write("\n");
                             }
                             break;
-                        case EItemType.MAGAZINE:
-                            magazines.Add((ItemMagazineAsset)item);
-                            break;
-                        case EItemType.SIGHT:
-                            if (!item.name.Contains("Iron_Sights")) // I don't want iron sights in the sights pool
-                            {
-                                sights.Add((ItemSightAsset)item);
-                            }
-                            break;
+
                         case EItemType.HAT:
-                            //if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).explosionArmor < 1)
-                            //{
                             hats.Add((ItemHatAsset)item);
-                            //}
                             break;
                         case EItemType.SHIRT:
-                            //if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).explosionArmor < 1)
-                            //{
                             shirts.Add((ItemShirtAsset)item);
-                            //}
                             break;
                         case EItemType.VEST:
-                            //if (((ItemClothingAsset)item).armor < 1 || ((ItemHatAsset)item).explosionArmor < 1)
-                            //{
                             vests.Add((ItemVestAsset)item);
-                            //}
                             break;
                         case EItemType.PANTS:
-                            //if (((ItemClothingAsset)item).armor < 1 || ((ItemClothingAsset)item).explosionArmor < 1)
                             pants.Add((ItemPantsAsset)item);
                             break;
                         case EItemType.MELEE:
@@ -83,10 +70,36 @@ namespace RandomizerArena
                             break;
                     }
                 }
+                else
+                {
+                    switch (item.type)
+                    {
+                        case EItemType.MAGAZINE:
+                            magazines.Add((ItemMagazineAsset)item);
+                            Console.Write("magazine-" + item.id + "-");
+                            foreach (ushort caliber in ((ItemMagazineAsset)item).calibers)
+                            {
+                                Console.Write(caliber + ", ");
+                            }
+                            Console.Write("\n");
+                            break;
+                        case EItemType.SIGHT:
+                            sights.Add((ItemSightAsset)item);
+                            Console.Write("sight-" + item.id + "-");
+                            foreach (ushort caliber in ((ItemSightAsset)item).calibers)
+                            {
+                                Console.Write(caliber + ", ");
+                            }
+                            Console.Write("\n");
+                            break;
+                    }
+                }
+                
             }
             weapon_kits = new List<WeaponKit>();
             foreach (ItemGunAsset gun in guns) // add all weapons
             {
+                if (test) Console.WriteLine("gun.id = " + gun.id);
                 WeaponKit kit = new WeaponKit
                 {
                     weapon_id = gun.id,
@@ -95,10 +108,13 @@ namespace RandomizerArena
                 };
                 foreach (ushort g_caliber in gun.magazineCalibers) // get gun's magasine options
                 {
+                    if (test) Console.WriteLine("  g_caliber = " + g_caliber);
                     foreach (ItemMagazineAsset magazine in magazines)
                     {
                         foreach (ushort m_caliber in magazine.calibers)
                         {
+                            if (test) Console.WriteLine("    m_caliber = " + m_caliber);
+                            if (test) Console.WriteLine("      " + g_caliber + " == " + m_caliber + " " + (g_caliber == m_caliber));
                             if (g_caliber == m_caliber)
                             {
                                 Magazine m = new Magazine
@@ -106,47 +122,57 @@ namespace RandomizerArena
                                     magazine_id = magazine.id,
                                     count = 3
                                 };
+                                if (test)
+                                {
+                                    Console.WriteLine("        Added magazine " + m.magazine_id + " " + m_caliber);
+                                }
                                 kit.magazines.Add(m);
                             }
                         }
                     }
                 }
-                foreach (ushort g_caliber in gun.attachmentCalibers) // get gun's attachment options
+                foreach (ushort a_caliber in gun.attachmentCalibers) // get gun's attachment options
                 {
-                    //if (test) Console.WriteLine("1) g_caliber = " + g_caliber);
+                    if (test) Console.WriteLine("  a_caliber = " + a_caliber);
                     foreach (ItemSightAsset sight in sights)
                     {
-                        //if (test) Console.WriteLine("   2) sight_id = " + sight.id);
                         foreach (ushort s_caliber in sight.calibers) // sight attachments
                         {
-                            //if (test) Console.WriteLine("      3) sight_caliber = " + s_caliber);
-                            if (g_caliber == s_caliber)
+                            if (test) Console.WriteLine("    s_caliber = " + s_caliber);
+                            if (test) Console.WriteLine("      " + a_caliber + " == " + s_caliber + " " + (a_caliber == s_caliber));
+                            if (a_caliber == s_caliber)
                             {
                                 Sight s = new Sight
                                 {
                                     sight_id = sight.id,
                                 };
+                                if (test)
+                                {
+                                    Console.WriteLine("        Added sight " + s.sight_id + " " + s_caliber);
+                                }
                                 kit.sights.Add(s);
-                                //if (test) Console.WriteLine("Added sight: " + sight.id);
                             }
                         }
                     }
                 }
                 weapon_kits.Add(kit);
             }
-            foreach (WeaponKit kit in weapon_kits) // add all magazines for weapons
+            if (test)
             {
-                string mags = "";
-                foreach (Magazine magazine in kit.magazines)
+                foreach (WeaponKit kit in weapon_kits) // add all magazines for weapons
                 {
-                    mags += magazine.magazine_id + ", ";
+                    string mags = "";
+                    foreach (Magazine magazine in kit.magazines)
+                    {
+                        mags += magazine.magazine_id + ", ";
+                    }
+                    string attachments = "";
+                    foreach (Sight attachment in kit.sights)
+                    {
+                        attachments += attachment.sight_id + ", ";
+                    }
+                    Console.WriteLine(kit.weapon_id + " | " + mags + " | " + attachments);
                 }
-                string attachments = "";
-                foreach (Sight attachment in kit.sights)
-                {
-                    attachments += attachment.sight_id + ", ";
-                }
-                //Console.WriteLine(kit.weapon_id + " - " + mags + " / " + attachments);
             }
             a_shirt = new List<Shirt>();
             foreach (ItemShirtAsset shirt in shirts)

@@ -28,6 +28,26 @@ namespace RandomizerArena
         }
     }
 
+    public class Donate : IRocketCommand
+    {
+        public AllowedCaller AllowedCaller => AllowedCaller.Player;
+
+        public string Name => "donate";
+
+        public string Help => "Donate to support the server!";
+
+        public string Syntax => "";
+
+        public List<string> Aliases => new List<string>();
+
+        public List<string> Permissions => new List<string>() { "donate" };
+
+        public void Execute(IRocketPlayer caller, string[] command)
+        {
+            UnturnedPlayer.FromName(caller.DisplayName).Player.sendBrowserRequest("Please consider donating a dollar or two to support the server!", "https://eu-randomizer-arena.tebex.io/category/1811468");
+        }
+    }
+
     public class Test : IRocketCommand
     {
         public AllowedCaller AllowedCaller => AllowedCaller.Console;
