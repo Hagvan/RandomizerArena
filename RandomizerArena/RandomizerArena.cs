@@ -19,12 +19,14 @@ namespace RandomizerArena
         private int current_duration = -1;
         private bool maxskills = false;
         private uint start_experience = 150;
-        private List<WeaponKit> weapon_kits;
+        public static List<WeaponKit> weapon_kits;
         private List<Pants> pants;
         private List<Hat> hats;
         private List<Shirt> shirts;
         private List<Vest> vests;
         private List<Melee> melees;
+        public static RandomizerEconomy economy = new RandomizerEconomy();
+        public static Queue<WeaponKit> nominate_queue = new Queue<WeaponKit>();
 
         protected override void Load()
         {
@@ -78,9 +80,17 @@ namespace RandomizerArena
 
                                     //Logger.Log($"{weapon_kits.Count}, {hats.Count}, {pants.Count}, {vests.Count}, {melees.Count}");
                                     //Logger.Log("1");
-                                    WeaponKit round_weaponkit = weapon_kits[random.Next(weapon_kits.Count)]; // randomly select loadout items
+                                    WeaponKit round_weaponkit;
+                                    if (nominate_queue.Count > 0)
+                                    {
+                                        round_weaponkit = nominate_queue.Dequeue();
+                                        UnturnedChat.Say("Nominated weapon round: " + round_weaponkit.weapon_name + "! You can nominate a weapon too by using the /nominate command!");
+                                    } 
+                                    else
+                                    {
+                                        round_weaponkit = weapon_kits[random.Next(weapon_kits.Count)]; // randomly select loadout items
+                                    }
                                     //Logger.Log("2");
-                                    Logger.Log(round_weaponkit.weapon_id + " " + round_weaponkit.magazines.Count);
                                     Magazine round_magazine = round_weaponkit.magazines[random.Next(round_weaponkit.magazines.Count)];
                                     //Logger.Log("3");
                                     Hat round_hat = hats[random.Next(hats.Count)];
@@ -108,15 +118,15 @@ namespace RandomizerArena
                                     {
                                         case 0:
                                             // advertise supporter perks and command to purchase
-                                            UnturnedChat.Say("Running the server isn't free. If you feel like supporting the server or you want NA server to happen, consider supporting the server! /donate");
+                                            UnturnedChat.Say("Running the server isn't free. Please consider watching a short ad in between rounds to also earn yourself some /balance!");
                                             break;
                                         case 1:
                                             // advertise survival server
-                                            UnturnedChat.Say("First person only, rescaled progression, semi-vanilla server is coming soon.");
+                                            UnturnedChat.Say("You have a specific weapon you want to play with? Try the /nominate command!");
                                             break;
                                         case 2:
                                             // advertise discord
-                                            UnturnedChat.Say("Enjoying the gamemode? Want to make a suggestion or apply for moderator? Join the server discord! Say /discord");
+                                            UnturnedChat.Say("Enjoying the gamemode? Want to make a suggestion or apply for moderator? Join the server discord! Say /discord!");
                                             round_counter = 0;
                                             break;
                                     }

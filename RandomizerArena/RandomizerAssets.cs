@@ -76,21 +76,27 @@ namespace RandomizerArena
                     {
                         case EItemType.MAGAZINE:
                             magazines.Add((ItemMagazineAsset)item);
-                            Console.Write("magazine-" + item.id + "-");
-                            foreach (ushort caliber in ((ItemMagazineAsset)item).calibers)
+                            if (test)
                             {
-                                Console.Write(caliber + ", ");
+                                Console.Write("magazine-" + item.id + "-");
+                                foreach (ushort caliber in ((ItemMagazineAsset)item).calibers)
+                                {
+                                    Console.Write(caliber + ", ");
+                                }
+                                Console.Write("\n");
                             }
-                            Console.Write("\n");
                             break;
                         case EItemType.SIGHT:
                             sights.Add((ItemSightAsset)item);
-                            Console.Write("sight-" + item.id + "-");
-                            foreach (ushort caliber in ((ItemSightAsset)item).calibers)
+                            if (test)
                             {
-                                Console.Write(caliber + ", ");
+                                Console.Write("sight-" + item.id + "-");
+                                foreach (ushort caliber in ((ItemSightAsset)item).calibers)
+                                {
+                                    Console.Write(caliber + ", ");
+                                }
+                                Console.Write("\n");
                             }
-                            Console.Write("\n");
                             break;
                     }
                 }
@@ -103,6 +109,7 @@ namespace RandomizerArena
                 WeaponKit kit = new WeaponKit
                 {
                     weapon_id = gun.id,
+                    weapon_name = gun.name,
                     magazines = new List<Magazine>(),
                     sights = new List<Sight>()
                 };
@@ -211,6 +218,7 @@ namespace RandomizerArena
     public class WeaponKit
     {
         public ushort weapon_id;
+        public string weapon_name;
         public List<Magazine> magazines;
         public List<Sight> sights;
 
