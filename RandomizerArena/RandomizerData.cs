@@ -4,27 +4,27 @@ using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
-using System;
 
 namespace RandomizerArena
 {
-    public class RandomizerEconomy
+    public class RandomizerData
     {
         private LiteDatabase db;
-        private ILiteCollection<PlayerBalance> balance_table;
+        private ILiteCollection<PlayerData> data_table;
 
-        public RandomizerEconomy()
+        public RandomizerData()
         {
             db = new LiteDatabase(@"./Plugins/RandomizerArena/Database.db");
-            balance_table = db.GetCollection<PlayerBalance>("balance");
-            balance_table.EnsureIndex(x => x.steam_id);
+            data_table = db.GetCollection<PlayerData>("balance");
+            data_table.EnsureIndex(x => x.steam_id);
         }
 
         public void RewardFrag(UnturnedPlayer player)
         {
-            PlayerBalance pb = GetOrCreateEntry(player);
+            PlayerData pb = GetOrCreateEntry(player);
             pb.balance += 75;
-            balance_table.Update(pb);
+            pb.score += 10;
+            data_table.Update(pb);
         }
 
         public void RewardAd(UnturnedPlayer player)
@@ -34,26 +34,21 @@ namespace RandomizerArena
 
         public void RewardAd(ulong steam_id)
         {
-            PlayerBalance pb = GetOrCreateEntry(steam_id);
+            PlayerData pb = GetOrCreateEntry(steam_id);
             pb.balance += 375;
-            balance_table.Update(pb);
+            data_table.Update(pb);
         }
 
         public bool PayForNominate(ulong steam_id)
         {
-            PlayerBalance pb = GetOrCreateEntry(steam_id);
-            if (pb.balance < 1000)
+            PlayerData pb = GetOrCreateEntry(steam_id);
+            if (pb.balance < 1500)
             {
                 return false;
             }
-            pb.balance -= 1000;
-            balance_table.Update(pb);
+            pb.balance -= 1500;
+            data_table.Update(pb);
             return true;
-        }
-
-        public void RefundNominate(ulong steam_id)
-        {
-
         }
 
         public uint GetBalance(UnturnedPlayer player)
@@ -61,43 +56,45 @@ namespace RandomizerArena
             return GetOrCreateEntry(player).balance;
         }
 
-        private PlayerBalance GetOrCreateEntry(UnturnedPlayer player)
+        private PlayerData GetOrCreateEntry(UnturnedPlayer player)
         {
-            PlayerBalance pb;
-            if ((pb = balance_table.FindOne(x => x.steam_id == player.CSteamID.m_SteamID)) == null)
+            PlayerData pb;
+            if ((pb = data_table.FindOne(x => x.steam_id == player.CSteamID.m_SteamID)) == null)
             {
-                pb = new PlayerBalance
+                pb = new PlayerData
                 {
                     steam_id = player.CSteamID.m_SteamID,
-                    balance = 0
+                    balance = 0,
+                    score = 0
                 };
-                balance_table.Insert(pb);
+                data_table.Insert(pb);
             }
             return pb;
         }
 
-        private PlayerBalance GetOrCreateEntry(ulong steam_id)
+        private PlayerData GetOrCreateEntry(ulong steam_id)
         {
-            PlayerBalance pb;
-            if ((pb = balance_table.FindOne(x => x.steam_id == steam_id)) == null)
+            PlayerData pb;
+            if ((pb = data_table.FindOne(x => x.steam_id == steam_id)) == null)
             {
-                pb = new PlayerBalance
+                pb = new PlayerData
                 {
                     steam_id = steam_id,
-                    balance = 0
+                    balance = 0,
+                    score = 0
                 };
-                balance_table.Insert(pb);
+                data_table.Insert(pb);
             }
             return pb;
         }
     }
 
-    public class PlayerBalance
+    public class PlayerData
     {
         public ObjectId Id { get; set; }
         public ulong steam_id { get; set; }
         public uint balance { get; set; }
-
+        public uint score { get; set; }
     }
 
     public class PlayerRA : UnturnedPlayerComponent
@@ -117,6 +114,14 @@ namespace RandomizerArena
             if (killer == null) return;
             RandomizerArena.economy.RewardFrag(killer);
             UnturnedChat.Say(killer, "You got 75 credits for fragging " + player.CharacterName);
+            foreach (SteamPlayer p in Provider.clients)
+            {
+                UnturnedPlayer unturnedPlayer = UnturnedPlayer.FromSteamPlayer(p);
+                if (unturnedPlayer.CSteamID != player.CSteamID || unturnedPlayer.CSteamID != killer.CSteamID)
+                {
+                    UnturnedChat.Say(UnturnedPlayer.FromSteamPlayer(p), killer.CharacterName + " fragged " + player.CharacterName);
+                }
+            }
         }
     }
 }

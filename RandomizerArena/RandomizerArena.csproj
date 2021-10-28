@@ -81,8 +81,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomizerCommands.cs" />
     <Compile Include="RandomizerAssets.cs" />
-    <Compile Include="RandomizerEconomy.cs" />
-    <Compile Include="RandomizerLeaderboard.cs" />
+    <Compile Include="RandomizerData.cs" />
     <Compile Include="RandomizerSpawnProtection.cs" />
   </ItemGroup>
   <ItemGroup>

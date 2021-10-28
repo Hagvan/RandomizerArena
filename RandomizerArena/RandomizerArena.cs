@@ -25,7 +25,7 @@ namespace RandomizerArena
         private List<Shirt> shirts;
         private List<Vest> vests;
         private List<Melee> melees;
-        public static RandomizerEconomy economy = new RandomizerEconomy();
+        public static RandomizerData economy = new RandomizerData();
         public static Queue<WeaponKit> nominate_queue = new Queue<WeaponKit>();
 
         protected override void Load()

@@ -132,7 +132,7 @@ namespace RandomizerArena
 
         public string Name => "Nominate";
 
-        public string Help => "Nominates a weapon to be used by everyone in the next round. Costs 1000 credits.";
+        public string Help => "Nominates a weapon to be used by everyone in the next round. Costs 1500 credits.";
 
         public string Syntax => "<gun id>";
 
