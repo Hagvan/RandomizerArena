@@ -158,7 +158,7 @@ namespace RandomizerArena
                         else
                         {
                             // not enough balance
-                            UnturnedChat.Say(player, "You don't have enough balance to use this command. Earn credits by fragging in the arena and watching ads.");
+                            UnturnedChat.Say(player, "You don't have enough balance to use this command. Earn credits by fragging in the arena.");
                         }
                     }
                     else

@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Rocket.Core.Logging;
 using Rocket.Unturned.Chat;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
@@ -108,19 +109,24 @@ namespace RandomizerArena
         }
         private void rpe_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            if (player == null) return;
-            if (murderer == null) return;
-            UnturnedPlayer killer = UnturnedPlayer.FromCSteamID(murderer);
-            if (killer == null) return;
-            RandomizerArena.economy.RewardFrag(killer);
-            UnturnedChat.Say(killer, "You got 75 credits for fragging " + player.CharacterName);
-            foreach (SteamPlayer p in Provider.clients)
+            try
             {
-                UnturnedPlayer unturnedPlayer = UnturnedPlayer.FromSteamPlayer(p);
-                if (unturnedPlayer.CSteamID != player.CSteamID || unturnedPlayer.CSteamID != killer.CSteamID)
+                UnturnedPlayer killer = UnturnedPlayer.FromCSteamID(murderer);
+                if (player.Equals(killer)) return; // don't pay for suicide
+                RandomizerArena.economy.RewardFrag(killer);
+                UnturnedChat.Say(killer, "You got 75 credits for fragging " + player.CharacterName);
+                foreach (SteamPlayer p in Provider.clients)
                 {
-                    UnturnedChat.Say(UnturnedPlayer.FromSteamPlayer(p), killer.CharacterName + " fragged " + player.CharacterName);
+                    UnturnedPlayer unturnedPlayer = UnturnedPlayer.FromSteamPlayer(p);
+                    if (unturnedPlayer.CSteamID != player.CSteamID || unturnedPlayer.CSteamID != killer.CSteamID)
+                    {
+                        UnturnedChat.Say(UnturnedPlayer.FromSteamPlayer(p), killer.CharacterName + " fragged " + player.CharacterName);
+                    }
                 }
+            }
+            catch
+            {
+                Logger.Log(player + " | " + cause + " | " + limb + " | " + murderer);
             }
         }
     }

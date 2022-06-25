@@ -185,31 +185,31 @@ namespace RandomizerArena
             foreach (ItemShirtAsset shirt in shirts)
             {
                 a_shirt.Add(new Shirt() { shirt_id = shirt.id });
-                if (test) Console.WriteLine(shirt.name + "|" + shirt.id + "|" + shirt.type + "|" + shirt.canPlayerEquip + "|" + shirt.canUse + "|" + shirt.size_x + "|" + shirt.size_y);
+                if (test) Console.WriteLine(shirt.name + "|" + shirt.id + "|" + shirt.type + "|" + shirt.canPlayerEquip + "|" + shirt.size_x + "|" + shirt.size_y);
             }
             a_vest = new List<Vest>();
             foreach (ItemVestAsset vest in vests)
             {
                 a_vest.Add(new Vest() { vest_id = vest.id });
-                if (test) Console.WriteLine(vest.name + "|" + vest.id + "|" + vest.type + "|" + vest.canPlayerEquip + "|" + vest.canUse + "|" + vest.size_x + "|" + vest.size_y);
+                if (test) Console.WriteLine(vest.name + "|" + vest.id + "|" + vest.type + "|" + vest.canPlayerEquip + "|" + vest.size_x + "|" + vest.size_y);
             }
             a_hat = new List<Hat>();
             foreach (ItemHatAsset l_hat in hats)
             {
                 a_hat.Add(new Hat() { hat_id = l_hat.id });
-                if (test) Console.WriteLine(l_hat.name + "|" + l_hat.id + "|" + l_hat.type + "|" + l_hat.canPlayerEquip + "|" + l_hat.canUse + "|" + l_hat.size_x + "|" + l_hat.size_y);
+                if (test) Console.WriteLine(l_hat.name + "|" + l_hat.id + "|" + l_hat.type + "|" + l_hat.canPlayerEquip + "|" + l_hat.size_x + "|" + l_hat.size_y);
             }
             a_pants = new List<Pants>();
             foreach (ItemPantsAsset l_pants in pants)
             {
                 a_pants.Add(new Pants() { pants_id = l_pants.id });
-                if (test) Console.WriteLine(l_pants.name + "|" + l_pants.id + "|" + l_pants.type + "|" + l_pants.canPlayerEquip + "|" + l_pants.canUse + "|" + l_pants.size_x + "|" + l_pants.size_y);
+                if (test) Console.WriteLine(l_pants.name + "|" + l_pants.id + "|" + l_pants.type + "|" + l_pants.canPlayerEquip + "|" + l_pants.size_x + "|" + l_pants.size_y);
             }
             a_melees = new List<Melee>();
             foreach (ItemMeleeAsset melee in melees)
             {
                 a_melees.Add(new Melee() { melee_id = melee.id });
-                if (test) Console.WriteLine(melee.name + "|" + melee.id + "|" + melee.type + "|" + melee.canPlayerEquip + "|" + melee.canUse + "|" + melee.size_x + "|" + melee.size_y);
+                if (test) Console.WriteLine(melee.name + "|" + melee.id + "|" + melee.type + "|" + melee.canPlayerEquip + "|" + melee.size_x + "|" + melee.size_y);
             }
         }
     }

@@ -118,7 +118,7 @@ namespace RandomizerArena
                                     {
                                         case 0:
                                             // advertise supporter perks and command to purchase
-                                            UnturnedChat.Say("Running the server isn't free. Please consider watching a short ad in between rounds to also earn yourself some /balance!");
+                                            // UnturnedChat.Say("Running the server isn't free. Please consider watching a short ad in between rounds to also earn yourself some /balance!");
                                             break;
                                         case 1:
                                             // advertise survival server
@@ -138,6 +138,7 @@ namespace RandomizerArena
                 yield return new WaitForSeconds(1f);
             }
         }
+
         private void EquipPlayer(UnturnedPlayer player, WeaponKit weaponKit, Magazine magazine, Hat hat, Shirt shirt, Pants pants, Vest vest, Melee melee)
         {
             ClearInventory(player); // forcefully remove inventory to prevent players from keeping the kit from previous round by not respawning
@@ -151,7 +152,7 @@ namespace RandomizerArena
             player.GiveItem(vest.vest_id, 1);
             if (maxskills)
             {
-                //player.MaxSkills();
+                //player.MaxSkills(); - was broken by some update, might be working again, check on your own risk.
             } 
             else
             {
